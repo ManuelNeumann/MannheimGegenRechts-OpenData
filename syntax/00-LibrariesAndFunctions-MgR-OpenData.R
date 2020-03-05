@@ -33,3 +33,6 @@ p_load(stargazer)
 citation("stargazer")
 p_load(here)
 citation("here")
+
+# Functions ----
+source(file = "functions/basicfunctions.R")

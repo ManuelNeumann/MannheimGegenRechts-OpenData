@@ -1,0 +1,274 @@
+---
+title: "Mythen und Fakten - Die AfD Wählerschaft unter der Lupe"
+author: "Manuel Neumann"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      fig.path = "plots/MgR-")
+```
+
+```{r sourcing}
+source("syntax/10-RecodingVariables-MgR-OpenData.R")
+```
+
+```{r colors}
+orange <- "#f8bd4c"
+blue <- "#00597e"
+
+darkgrey <- "darkgrey"
+red <- "#EE495C"
+green <- "#5ED140"
+
+colors <- c(orange, blue, darkgrey, red)
+```
+
+# Einführung
+
+In diesem Dokument präsentiere ich die Ergebnisse 
+
+# Die Datenquellen
+
+- GLES - Rolling Cross Sectional
+- GLES - Wahlkampfpanel
+
+# AfD Wähler
+
+```{r Wahlentscheidungen}
+proptable(gles$voteact1a) %>% kable()
+proptable(grcs$voteact) %>% kable()
+```
+
+# Ost-West
+
+```{r ostwest_plot}
+ostwest <- gles %>% 
+  select(afdvote1, ost) %>% 
+  na.omit() %>% 
+  filter(afdvote1 == 1) %>% 
+  ggplot(aes(x = ost)) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           stat = "count",
+           fill = blue,
+           color = blue,
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = colors) +
+  theme_minimal_hgrid(font_size = 10) +
+  labs(y = "Prozent der befragten Personen",
+       x = ""); ostwest
+```
+
+```{r ostwest_plot1}
+ostwest1 <- gles %>% 
+  select(afdvote1, ost) %>% 
+  na.omit() %>% 
+  group_by(ost, afdvote1) %>% 
+  summarize(afdvoters = n()) %>% 
+  group_by(ost) %>% 
+  mutate(Anteil = afdvoters/sum(afdvoters),
+         Anteil_r = paste0(round(Anteil, 3)*100, "%")) %>% 
+  ggplot(aes(x = ost, y = Anteil,
+             fill = as.factor(afdvote1),
+             color = as.factor(afdvote1))) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           alpha = 0.5) +
+  geom_text(aes(y = Anteil+0.05,
+                label = Anteil_r),
+            position = position_dodge(width = 0.9),
+            color = "black", 
+            size = 2) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  theme_minimal_hgrid(font_size = 10) +
+  theme(legend.position = "bottom") +
+  labs(y = "Prozent der befragten Personen",
+       x = ""); ostwest1
+```
+
+
+# Einstellungen
+```{r outgroup_plot1, warning=FALSE}
+outgrplot <- ggplot(data = gles, aes(x = outgrindex)) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           stat = "count",
+           fill = orange,
+           color = orange,
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_x_continuous(breaks = c(0:4),
+                     labels = c("Eher tolerant",
+                                "<-",
+                                "|",
+                                "->",
+                                "Eher restriktiv")) +
+  theme_minimal_hgrid(font_size = 10) +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index"); outgrplot
+  
+```
+
+```{r outgroup_plot2a}
+# Visualization.
+gles_outgrmean <- gles %>% 
+  select(outgrindex1stand, afdvote1) %>%
+  na.omit() %>%
+  summarize(label = paste0("Durchschnitt\n(", 
+                           round(mean(outgrindex1stand),2),
+                           ")"),
+            mean = mean(outgrindex1stand))
+
+outmodus <- gles %>% 
+  select(outgrindex1stand, afdvote1) %>% 
+  na.omit() %>% 
+  group_by(outgrindex1stand) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%"))
+
+
+
+outgrplot1 <- ggplot(outmodus, 
+                     aes(x = as.numeric(outgrindex1stand),
+                         y = freq)) + 
+  geom_bar(stat = "identity",
+           fill = orange,
+           color = orange,
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format(1), 
+                     limits = c(0, 0.17)) +
+  scale_x_continuous(labels = c("0 = Sehr tolerant", 
+                                "<-",
+                                "|",
+                                "->",
+                                "1 = Sehr restriktiv")) +
+  theme_minimal_hgrid(font_size = 10) +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index"); outgrplot1
+```
+
+```{r outgroup_plot2b}
+outgrplot2 <- outgrplot1 + 
+  geom_vline(xintercept = mean(gles$outgrindex1stand, 
+                               na.rm = TRUE),
+             linetype = 2,
+             alpha = 0.75) +
+  geom_label(data = gles_outgrmean,
+            aes(label = label, 
+                x = mean,
+                y = 0.138),
+            size = 2); outgrplot2
+```
+
+```{r outgroup_plot2c}
+outgrplot3 <- outgrplot2 +
+  geom_text(data = outmodus[outmodus$outgrindex1stand %in% c(0, 0.5, 1),], 
+            aes(x = outgrindex1stand, 
+                y = freq+0.005,
+            label = freq_r),
+            size = 2); outgrplot3
+```
+```{r outgroup_plot2d}
+outgrplot4 <- ggplot(na.omit(gles[, c("outgrindex1stand", 
+                                      "afdvote1")]), aes(x = outgrindex1stand, 
+                               fill = as.factor(afdvote1),
+                               color = as.factor(afdvote1))) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format(1), 
+                     limits = c(0, 0.15)) +
+  scale_x_continuous(labels = c("0 = Sehr tolerant", 
+                                "<-",
+                                "|",
+                                "->",
+                                "1 = Sehr restriktiv")) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  theme_minimal_hgrid(font_size = 10) +
+  theme(legend.position = "bottom") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index"); outgrplot4
+
+```
+
+```{r outgroup_plot_extreme1}
+outgrplot5 <- gles %>%
+  select(outgrindex1stand, voteact1) %>% 
+  na.omit() %>% 
+  filter(outgrindex1stand == 1) %>% 
+  ggplot(aes(x = as.factor(voteact1),
+             fill = as.factor(voteact1),
+             color = as.factor(voteact1))) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format(1),
+                     limits = c(0, 0.5), 
+                     breaks = seq(0, 0.5, by = 0.05)) +
+  scale_fill_manual(values = c(blue, "black", "yellow",
+                               red, green, "purple", 
+                               "brown", "lightgrey"),
+                    name = "",
+                    labels = c("AfD", "CDU/CSU", "FDP",
+                               "SPD", "Grüne", "LINKE",
+                               "Andere", "Nichtwahl")) +
+  scale_color_manual(values = c(blue, "black", "yellow",
+                                red, green, "purple", 
+                                "brown", "lightgrey"),
+                    name = "",
+                    labels = c("AfD", "CDU/CSU", "FDP",
+                               "SPD", "Grüne", "LINKE",
+                               "Andere", "Nichtwahl")) +
+  theme_minimal_hgrid(font_size = 10) +
+  theme(legend.position = "bottom") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index (Extremwert = 1)"); outgrplot5
+```
+```{r outgroup_plot_extreme2}
+outgrplot6 <- gles %>%
+  select(outgrindex1stand, voteact1) %>% 
+  na.omit() %>% 
+  filter(outgrindex1stand >= 0.75) %>% 
+  ggplot(aes(x = as.factor(voteact1),
+             fill = as.factor(voteact1),
+             color = as.factor(voteact1))) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format(1),
+                     limits = c(0, 0.3), 
+                     breaks = seq(0, 0.3, by = 0.05)) +
+  scale_fill_manual(values = c(blue, "black", "yellow",
+                               red, green, "purple", 
+                               "brown", "lightgrey"),
+                    name = "",
+                    labels = c("AfD", "CDU/CSU", "FDP",
+                               "SPD", "Grüne", "LINKE",
+                               "Andere", "Nichtwahl")) +
+  scale_color_manual(values = c(blue, "black", "yellow",
+                                red, green, "purple", 
+                                "brown", "lightgrey"),
+                    name = "",
+                    labels = c("AfD", "CDU/CSU", "FDP",
+                               "SPD", "Grüne", "LINKE",
+                               "Andere", "Nichtwahl")) +
+  theme_minimal_hgrid(font_size = 10) +
+  theme(legend.position = "bottom") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index (Oberes Viertel)"); outgrplot6
+```
+
