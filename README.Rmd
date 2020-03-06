@@ -7,11 +7,14 @@ output: rmarkdown::github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
-                      fig.path = "plots/MgR-")
+                      fig.path = "plots/MgR-",
+                      fig.height = 5.5,
+                      fig.width = 13)
 ```
 
 ```{r sourcing}
-source("syntax/10-RecodingVariables-MgR-OpenData.R")
+source("syntax/10-RecodingVariables-MgR-OpenData.R", 
+       encoding = "utf-8")
 ```
 
 ```{r colors}
@@ -84,7 +87,7 @@ lr_immi_plot <- grcs %>%
                                 "|",
                                 rep("", 4),
                                 "Rechts")) +
-  theme_minimal_grid(font_size = 15) +
+  theme_minimal_grid(font_size = 20) +
 labs(y = "Position zu Einwanderung", 
        x = "Links-rechts Selbsteinstufung"); lr_immi_plot
 ```
