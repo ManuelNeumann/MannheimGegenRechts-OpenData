@@ -20,7 +20,7 @@ In diesem Dokument präsentiere ich die Ergebnisse
 | Andere  |  7.91 |
 | CDU/CSU | 20.64 |
 | FDP     | 10.00 |
-| GrÃ¼ne  |  9.01 |
+| Grüne   |  9.01 |
 | LINKE   | 17.19 |
 | SPD     | 20.14 |
 
@@ -30,7 +30,7 @@ In diesem Dokument präsentiere ich die Ergebnisse
 | Andere  |  2.94 |
 | CDU/CSU | 29.03 |
 | FDP     | 12.37 |
-| GrÃ¼ne  | 14.11 |
+| Grüne   | 14.11 |
 | LINKE   | 12.19 |
 | SPD     | 22.09 |
 
@@ -40,9 +40,7 @@ In diesem Dokument präsentiere ich die Ergebnisse
 
 ![](plots/MgR-links-rechts-immi-1.png)<!-- -->
 
-![](plots/MgR-links-rechts-gender-1.png)<!-- -->
-
-![](plots/MgR-links-rechts-afd-1.png)<!-- -->
+![](plots/MgR-links-rechts-gender-1.gif)<!-- -->
 
 # Sozio-ökonomische Zusammenhänge
 

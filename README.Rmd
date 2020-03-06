@@ -9,7 +9,8 @@ output: rmarkdown::github_document
 knitr::opts_chunk$set(echo = FALSE,
                       fig.path = "plots/MgR-",
                       fig.height = 5.5,
-                      fig.width = 13)
+                      fig.width = 13,
+                      gganimate = list(nframes = 50))
 ```
 
 ```{r sourcing}
@@ -63,7 +64,7 @@ lr_plot <- grcs %>%
                                 "|",
                                 rep("", 4),
                                 "Rechts")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
        x = "Links-rechts Selbsteinstufung"); lr_plot
@@ -74,7 +75,7 @@ lr_immi_plot <- grcs %>%
   select(lr, ego_immi1) %>% 
   na.omit() %>% 
   ggplot(aes(x = lr, y = ego_immi1)) +
-  geom_jitter(alpha = 0.15,
+  geom_jitter(alpha = 0.25,
               color = orange,
               fill = orange) +
   scale_y_continuous(breaks = c(0:10),
@@ -111,14 +112,15 @@ lr_plot_gen <- grcs %>%
                     values = colors) +
   scale_color_manual(name = "Geschlecht",
                      values = colors) +
-  scale_y_continuous(labels = percent_format(1)) +
+  scale_y_continuous(breaks = seq(0, 0.7, by = 0.1),
+                     labels = percent_format(1)) +
   scale_x_continuous(breaks = c(0:10),
                      labels = c("Links", 
                                 rep("", 4),
                                 "|",
                                 rep("", 4),
                                 "Rechts")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
@@ -126,43 +128,44 @@ lr_plot_gen <- grcs %>%
 
 lr_plot_gen_animated <- lr_plot_gen + 
   transition_states(lr, wrap = FALSE) +
-  shadow_mark(); lr_plot_gen_animated
+  shadow_mark()
+animate(lr_plot_gen_animated, end_pause = 20)
 ```
 
 ```{r links-rechts-afd}
-lr_afd_plot <- gles %>% 
-  select(lr, afdvote1) %>% 
-  na.omit() %>% 
-  ggplot(aes(x = lr, 
-             color = afdvote1,
-             fill = afdvote1)) +
-  geom_bar(aes(y = (..count..)/sum(..count..)),
-           alpha = 0.5) +
-  scale_y_continuous(labels = percent_format(1), 
-                     limits = c(0, 0.30)) +
-  scale_x_continuous(breaks = c(0:10),
-                     labels = c("Links", 
-                                rep("", 4),
-                                "|",
-                                rep("", 4),
-                                "Rechts")) +
-  scale_fill_manual(values = colors,
-                    name = "",
-                    labels = c("Andere Parteien", 
-                               "AfD")) +
-  scale_color_manual(values = colors,
-                     name = "",
-                     labels = c("Andere Parteien", 
-                               "AfD")) +
-  theme_minimal_hgrid(font_size = 15) +
-  theme(legend.position = "bottom",
-        legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
-       x = "Links-rechts Selbsteinstufung"); lr_afd_plot
+# lr_afd_plot <- gles %>% 
+#   select(lr, afdvote1) %>% 
+#   na.omit() %>% 
+#   ggplot(aes(x = lr, 
+#              color = as.factor(afdvote1),
+#              fill = as.factor(afdvote1))) +
+#   geom_bar(aes(y = (..count..)/sum(..count..)),
+#            alpha = 0.5) +
+#   scale_y_continuous(labels = percent_format(1), 
+#                      limits = c(0, 0.30)) +
+#   scale_x_continuous(breaks = c(0:10),
+#                      labels = c("Links", 
+#                                 rep("", 4),
+#                                 "|",
+#                                 rep("", 4),
+#                                 "Rechts")) +
+#   scale_fill_manual(values = colors,
+#                     name = "",
+#                     labels = c("Andere Parteien", 
+#                                "AfD")) +
+#   scale_color_manual(values = colors,
+#                      name = "",
+#                      labels = c("Andere Parteien", 
+#                                "AfD")) +
+#   theme_minimal_hgrid(font_size = 20) +
+#   theme(legend.position = "bottom",
+#         legend.justification="center") +
+#   labs(y = "Prozent der befragten Personen",
+#        x = "Links-rechts Selbsteinstufung"); lr_afd_plot
 ```
 
 # Sozio-ökonomische Zusammenhänge
-```{r gender_plot}
+```{r gender_plot, fig.width=5.5}
 gender <- gles %>% 
   select(afdvote1, gender) %>% 
   na.omit() %>% 
@@ -175,14 +178,14 @@ gender <- gles %>%
            alpha = 0.5) +
   scale_y_continuous(labels = percent_format()) +
   scale_fill_manual(values = colors) +
-  theme_minimal_hgrid(font_size = 15) +
-  labs(y = "Prozent der befragten Personen",
+  theme_minimal_hgrid(font_size = 20) +
+  labs(y = "Prozent der AfD Wähler*innen",
        x = ""); gender
 ```
 
 # Ost-West
 
-```{r ostwest_plot}
+```{r ostwest_plot, fig.width=5.5}
 ostwest <- gles %>% 
   select(afdvote1, ost) %>% 
   na.omit() %>% 
@@ -195,8 +198,8 @@ ostwest <- gles %>%
            alpha = 0.5) +
   scale_y_continuous(labels = percent_format()) +
   scale_fill_manual(values = colors) +
-  theme_minimal_hgrid(font_size = 15) +
-  labs(y = "Prozent der befragten Personen",
+  theme_minimal_hgrid(font_size = 20) +
+  labs(y = "Prozent der AfD Wähler*innen",
        x = ""); ostwest
 ```
 
@@ -229,7 +232,7 @@ ostwest1 <- gles %>%
                      name = "",
                      labels = c("Andere Parteien", 
                                "AfD")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
@@ -264,7 +267,7 @@ ostwest1 <- gles %>%
 #                      name = "",
 #                      labels = c("Andere Parteien", 
 #                                "AfD")) +
-#   theme_minimal_hgrid(font_size = 15) +
+#   theme_minimal_hgrid(font_size = 20) +
 #   theme(legend.position = "bottom",         legend.justification="center") +
 #   labs(y = "Prozent der befragten Personen",
 #        x = ""); ostwest2
@@ -286,7 +289,7 @@ outgrplot <- ggplot(data = gles, aes(x = outgrindex)) +
                                 "|",
                                 "->",
                                 "Eher restriktiv")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   labs(y = "Prozent der befragten Personen",
        x = "Index"); outgrplot
   
@@ -326,7 +329,7 @@ outgrplot1 <- ggplot(outmodus,
                                 "|",
                                 "->",
                                 "1\nSehr restriktiv")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   labs(y = "Prozent der befragten Personen",
        x = "Index"); outgrplot1
 ```
@@ -344,11 +347,11 @@ outgrplot2 <- outgrplot1 +
             size = 5); outgrplot2
 ```
 
-```{r outgroup_plot2c, fig.width=10, fig.height=5}
+```{r outgroup_plot2c}
 outgrplot3 <- outgrplot2 +
   geom_text(data = outmodus[outmodus$outgrindex1stand %in% c(0, 0.5, 1),], 
             aes(x = outgrindex1stand, 
-                y = freq+0.005,
+                y = freq+0.007,
             label = freq_r),
             size = 5); outgrplot3
 ```
@@ -374,7 +377,7 @@ outgrplot4 <- ggplot(na.omit(gles[, c("outgrindex1stand",
                      name = "",
                      labels = c("Andere Parteien", 
                                "AfD")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
@@ -409,7 +412,7 @@ outgrplot5 <- gles %>%
                     labels = c("AfD", "CDU/CSU", "FDP",
                                "SPD", "Grüne", "LINKE",
                                "Andere", "Nichtwahl")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
        x = "Index (Extremwert = 1)"); outgrplot5
@@ -441,7 +444,7 @@ outgrplot6 <- gles %>%
                     labels = c("AfD", "CDU/CSU", "FDP",
                                "SPD", "Grüne", "LINKE",
                                "Andere", "Nichtwahl")) +
-  theme_minimal_hgrid(font_size = 15) +
+  theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
