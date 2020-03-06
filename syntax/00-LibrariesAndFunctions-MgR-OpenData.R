@@ -18,6 +18,12 @@ p_load(tidyverse)
 citation("tidyverse")
 
 # For plots
+p_load("gganimate")
+citation("gganimate")
+p_load("gifski")
+citation("gifski")
+p_load("png")
+citation("png")
 p_load("cowplot")
 citation("cowplot")
 p_load("scales")

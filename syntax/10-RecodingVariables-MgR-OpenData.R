@@ -54,6 +54,35 @@ grcs %<>% mutate(voteint = case_when(pre005a == -98 ~ "ADontKnow",
                                      voteact != "AfD" ~ 0,
                                      FALSE ~ NA_real_))
 
+grcs$afd <- if_else(grcs$afdvote == 1, "AfD", "Andere Partei") %>% factor()
+
+# b. Independent variables ----
+
+# i. Links/Rechts
+attributes(grcs$pre017)
+table(grcs$pre017)
+
+grcs %<>% mutate(lr = if_else(pre017 > 0, 
+                              pre017 - 1, NA_real_))
+
+# ii. Ost-West ----
+attributes(grcs$ostwest)
+table(grcs$ostwest)
+grcs$ost <- if_else(grcs$ostwest == 1, "West", "Ost") %>% 
+  factor(., levels = c("West", "Ost"))
+
+# iii. Gender
+attributes(grcs$pre102)
+table(grcs$pre102, useNA = "always")
+
+grcs$gender <- if_else(grcs$pre102 == 1, "M", "W") %>% factor()
+
+# iv. Ego: Zuwanderung
+attributes(grcs$pre019)
+table(grcs$pre019)
+
+grcs %<>% mutate(ego_immi1 = if_else(pre019 > 0, pre019 - 1, NA_real_))
+
 # II. Panel ----
 
 # Recoding Variables ----------------------------------------------------
@@ -269,3 +298,61 @@ gles %<>% mutate(outgrindex = case_when(outgrindex1stand <= 0.1875 ~ 0,
 # ii. Ost-West ----
 gles$ost <- if_else(gles$ostwest == 1, "West", "Ost")
 gles$ost %<>% factor(., levels = c("West", "Ost"))
+
+
+# iii. Socio-economic variables ----
+# Age ----
+table(gles$kpx_2290)
+gles$age <- 2017 - gles$kpx_2290
+
+# Gender ----
+attributes(gles$kpx_2280)
+table(gles$kpx_2280)
+gles$gender <- if_else(gles$kpx_2280 == 2, "W", "M") %>% factor()
+
+
+# Income satisfaction ----
+attributes(gles$kp1_780)
+table(gles$kp1_780)
+
+gles$income1 <- if_else(gles$kp1_780 < 0,
+                        NA_real_, as.numeric(-(gles$kp1_780 - 5)))
+
+
+# Education ----
+attributes(gles$kp1_2320)
+table(gles$kp1_2320)
+
+gles$edu <- case_when(gles$kp1_2320 %in% c(1, 2) ~ 0,
+                      gles$kp1_2320 == 3 ~ 1,
+                      gles$kp1_2320 %in% c(4, 5) ~ 2,
+                      FALSE ~ NA_real_)
+
+
+# iv. Political Interest ----
+attributes(gles$kp1_010)
+table(gles$kp1_010)
+
+# Recoding:
+gles %<>% mutate(polint1 = if_else(kp1_010 > 0,
+                                   -(kp1_010 - 5), NA_real_),
+                 polint12 = polint1^2,
+                 polint7 = if_else(kp7_010 > 0,
+                                   -(kp7_010 - 5), NA_real_))
+
+table(gles$polint1)
+proptable(gles$polint1)
+summary(gles$polint1)
+
+table(gles$polint7)
+proptable(gles$polint7)
+summary(gles$polint7)
+
+cor.test(gles$polint1, gles$polint7)
+table(gles$polint1, gles$polint7)
+
+# v. Links-rechts ----
+attributes(gles$kp7_1500)
+table(gles$kp7_1500)
+
+gles$lr <- if_else(gles$kp7_1500 > 0, gles$kp7_1500 - 1, NA_real_)

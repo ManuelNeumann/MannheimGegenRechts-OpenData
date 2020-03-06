@@ -1,7 +1,7 @@
 Mythen und Fakten - Die AfD Wählerschaft unter der Lupe
 ================
 Manuel Neumann
-05 March, 2020
+06 March, 2020
 
 # Einführung
 
@@ -33,6 +33,20 @@ In diesem Dokument präsentiere ich die Ergebnisse
 | GrÃ¼ne  | 14.11 |
 | LINKE   | 12.19 |
 | SPD     | 22.09 |
+
+# Links-rechts
+
+![](plots/MgR-links-rechts-1.png)<!-- -->
+
+![](plots/MgR-links-rechts-immi-1.png)<!-- -->
+
+![](plots/MgR-links-rechts-gender-1.png)<!-- -->
+
+![](plots/MgR-links-rechts-afd-1.png)<!-- -->
+
+# Sozio-ökonomische Zusammenhänge
+
+![](plots/MgR-gender_plot-1.png)<!-- -->
 
 # Ost-West
 
