@@ -119,9 +119,11 @@ lr_plot_gen <- grcs %>%
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
-       x = "Links-rechts Selbsteinstufung"); lr_plot_gen
+       x = "Links-rechts Selbsteinstufung")
 
-# lr_plot_gen + transition_states(lr, wrap = TRUE)
+lr_plot_gen_animated <- lr_plot_gen + 
+  transition_states(lr, wrap = FALSE) +
+  shadow_mark(); lr_plot_gen_animated
 ```
 
 ```{r links-rechts-afd}
