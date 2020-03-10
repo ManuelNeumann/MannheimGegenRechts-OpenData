@@ -304,6 +304,14 @@ gles$ost %<>% factor(., levels = c("West", "Ost"))
 # Age ----
 table(gles$kpx_2290)
 gles$age <- 2017 - gles$kpx_2290
+table(gles$age)
+
+gles %<>% mutate(age2 = case_when(age < 30 ~ "18 - 29",
+                                  age >= 30 & age < 40 ~ "30 - 39",
+                                  age >= 40 & age < 50 ~ "40 - 49",
+                                  age >= 50 & age < 60 ~ "50 - 59",
+                                  age >= 60 & age < 70 ~ "60 - 69",
+                                  age >= 70 ~ "70+"))
 
 # Gender ----
 attributes(gles$kpx_2280)
@@ -356,3 +364,69 @@ attributes(gles$kp7_1500)
 table(gles$kp7_1500)
 
 gles$lr <- if_else(gles$kp7_1500 > 0, gles$kp7_1500 - 1, NA_real_)
+
+
+# vi. Migrationsgeschichte
+attributes(gles$kpx_2571a)
+attributes(gles$kpx_2571b)
+
+table(gles$kpx_2571a, gles$kpx_2571b, useNA = "always")
+
+gles %<>% mutate(mum = if_else(kpx_2571a > 0,
+                               kpx_2571a - 1, 
+                               NA_real_),
+                 dad = if_else(kpx_2571b > 0, 
+                               kpx_2571b - 1, 
+                               NA_real_),
+                 eltern = dad+mum)
+table(gles$eltern)
+
+# vii. Herkunftsland der Eltern
+
+# Mutter
+attributes(gles$kpx_2572a)
+table(gles$kpx_2572a)
+
+# Vater
+attributes(gles$kpx_2572b)
+table(gles$kpx_2572b)
+
+gles %<>% mutate(land_mum = case_when(kpx_2572a == -97 ~ 0,
+                                      kpx_2572a == 1 ~ 1,
+                                      kpx_2572a == 2 ~ 2,
+                                      kpx_2572a %in% c(3, 6, 8, 10,
+                                                       11, 12, 13, 14) ~ 3,
+                                      kpx_2572a %in% c(4, 5, 9) ~ 4,
+                                      kpx_2572a == 7 ~ 5,
+                                      kpx_2572a == 16 ~ 6,
+                                      FALSE ~ NA_real_), 
+                 land_dad = case_when(kpx_2572b == -97 ~ 0,
+                                      kpx_2572b == 1 ~ 1,
+                                      kpx_2572b == 2 ~ 2,
+                                      kpx_2572b %in% c(3, 6, 8, 10,
+                                                       11, 12, 13, 14) ~ 3,
+                                      kpx_2572b %in% c(4, 5, 9) ~ 4,
+                                      kpx_2572b == 7 ~ 5,
+                                      kpx_2572b == 16 ~ 6,
+                                      FALSE ~ NA_real_))
+
+table(gles$land_mum, gles$land_dad)
+
+# viii. Religion
+attributes(gles$kp1_2480)
+table(gles$kp1_2480)
+
+attributes(gles$kpa1_2480)
+table(gles$kpa1_2480)
+
+gles %<>% mutate(relig = case_when(kp1_2480 %in% c(1:4) | 
+                                     kpa1_2480 %in% c(1:4) ~ "Christlich",
+                                   kp1_2480 == 5 | 
+                                     kpa1_2480 == 5 ~ "Andere (nicht christlich)",
+                                   kp1_2480 == 6 | 
+                                     kpa1_2480 == 6 ~ "Muslimisch",
+                                   kp1_2480 == 9 | 
+                                     kpa1_2480 == 9 ~ "Keine Zugehörigkeit",
+                                   FALSE ~ NA_character_),
+                 islam = if_else(relig == "Muslimisch", 1, 0))
+table(gles$islam)

@@ -7,10 +7,12 @@ output: rmarkdown::github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
                       fig.path = "plots/MgR-",
                       fig.height = 5.5,
                       fig.width = 13,
-                      gganimate = list(nframes = 50))
+                      gganimate = list(nframes = 300,
+                                       fps = 20))
 ```
 
 ```{r sourcing}
@@ -68,9 +70,11 @@ lr_plot <- grcs %>%
   theme(legend.position = "bottom",         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
        x = "Links-rechts Selbsteinstufung"); lr_plot
+
+cat("N =", nrow(na.omit(grcs[, c("lr")])))
 ```
 
-```{r links-rechts-immi}
+```{r links-rechts-immi, fig.width=6.8}
 lr_immi_plot <- grcs %>% 
   select(lr, ego_immi1) %>% 
   na.omit() %>% 
@@ -81,7 +85,7 @@ lr_immi_plot <- grcs %>%
   scale_y_continuous(breaks = c(0:10),
                      labels = c("Pro\nImmigration", 
                                 rep("", 9), 
-                                "Contra\nImmigration")) +
+                                "Kontra\nImmigration")) +
   scale_x_continuous(breaks = c(0:10),
                      labels = c("Links", 
                                 rep("", 4),
@@ -91,6 +95,8 @@ lr_immi_plot <- grcs %>%
   theme_minimal_grid(font_size = 20) +
 labs(y = "Position zu Einwanderung", 
        x = "Links-rechts Selbsteinstufung"); lr_immi_plot
+
+cat("N =", nrow(na.omit(grcs[, c("lr", "ego_immi1")])))
 ```
 
 ```{r links-rechts-gender}
@@ -124,12 +130,14 @@ lr_plot_gen <- grcs %>%
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
-       x = "Links-rechts Selbsteinstufung")
+       x = "Links-rechts Selbsteinstufung");lr_plot_gen
 
 lr_plot_gen_animated <- lr_plot_gen + 
   transition_states(lr, wrap = FALSE) +
   shadow_mark()
 animate(lr_plot_gen_animated, end_pause = 20)
+
+cat("N =", nrow(na.omit(grcs[, c("lr", "gender")])))
 ```
 
 ```{r links-rechts-afd}
@@ -182,6 +190,103 @@ gender <- gles %>%
   labs(y = "Prozent der AfD Wähler*innen",
        x = ""); gender
 ```
+
+```{r age_plot}
+ageplot1 <- gles %>% 
+  select(afdvote1, age2) %>% 
+  na.omit() %>% 
+  ggplot(aes(x = age2,
+             fill = as.factor(afdvote1),
+             color = as.factor(afdvote1))) +
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           alpha = 0.5) +
+  scale_y_continuous(labels = percent_format(1)) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  theme_minimal_hgrid(font_size = 20) +
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index"); ageplot1
+
+```
+```{r ageplot2}
+ageplot2 <- gles %>% 
+  select(age2, afdvote1) %>% 
+  na.omit() %>%
+  group_by(age2, afdvote1) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ggplot(aes(x = age2,
+             y = freq,
+             fill = as.factor(afdvote1),
+             color = as.factor(afdvote1))) +
+  geom_bar(stat = "identity",
+           alpha = 0.5,
+           position = "dodge") +
+  geom_text(aes(y = freq+0.05, label = freq_r),
+            position = position_dodge(width = 0.9),
+            color = "black", 
+            size = 5) +
+  scale_y_continuous(labels = percent_format(1)) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  theme_minimal_hgrid(font_size = 20) +
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index"); ageplot2
+```
+
+```{r ageplot3}
+ageplot3 <- gles %>% 
+  select(age2, afdvote1, gender) %>% 
+  na.omit() %>%
+  group_by(gender, age2, afdvote1) %>% 
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ggplot(aes(x = age2,
+             y = freq,
+             fill = as.factor(afdvote1),
+             color = as.factor(afdvote1))) +
+  geom_bar(stat = "identity",
+           alpha = 0.5,
+           position = "dodge") +
+  geom_text(aes(y = freq+0.05, label = freq_r),
+            position = position_dodge(width = 0.9),
+            color = "black", 
+            size = 5) +
+  scale_y_continuous(labels = percent_format(1)) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  facet_wrap(.~gender) +
+  theme_minimal_hgrid(font_size = 20) +
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Index"); ageplot3
+```
+
 
 # Ost-West
 
@@ -449,5 +554,105 @@ outgrplot6 <- gles %>%
         legend.justification="center") +
   labs(y = "Prozent der befragten Personen",
        x = "Index (Oberes Viertel)"); outgrplot6
+```
+
+# Migrationsgeschichte
+
+```{r migration}
+migrationplot <- gles %>% 
+  select(eltern, afdvote1) %>% 
+  na.omit() %>%
+  group_by(eltern) %>% 
+  summarize(n = n()) %>% 
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ggplot(aes(x = eltern,
+             y = freq)) +
+  geom_bar(stat = "identity",
+           alpha = 0.5,
+           fill = orange,
+           color = orange,
+           position = "dodge") +
+  geom_text(aes(y = freq+0.05, label = freq_r),
+            position = position_dodge(width = 0.9),
+            color = "black", 
+            size = 5) +
+  scale_y_continuous(labels = percent_format(1)) +
+  theme_minimal_hgrid(font_size = 20) +
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot
+```
+
+```{r migration1}
+migrationplot1 <- gles %>% 
+  select(eltern, afdvote1) %>% 
+  na.omit() %>% 
+  group_by(eltern, afdvote1) %>% 
+  summarize(n = n()) %>% 
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ggplot(aes(x = eltern,
+             y = freq,
+             fill = as.factor(afdvote1),
+             color = as.factor(afdvote1))) +
+  geom_bar(stat = "identity",
+           alpha = 0.5,
+           position = "dodge") +
+  geom_text(aes(y = freq+0.05, label = freq_r),
+            position = position_dodge(width = 0.9),
+            color = "black", 
+            size = 5) +
+  scale_y_continuous(labels = percent_format(1)) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  theme_minimal_hgrid(font_size = 20) +
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot1
+```
+
+```{r migration2}
+migrationplot2 <- gles %>% 
+  select(eltern, afdvote1, land_dad) %>% 
+  na.omit() %>% 
+  group_by(land_dad, eltern, afdvote1) %>% 
+  summarize(n = n()) %>% 
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ggplot(aes(x = eltern,
+             y = freq,
+             fill = as.factor(afdvote1),
+             color = as.factor(afdvote1))) +
+  geom_bar(stat = "identity",
+           alpha = 0.5,
+           position = "dodge") +
+  geom_text(aes(y = freq+0.05, label = freq_r),
+            position = position_dodge(width = 0.9),
+            color = "black", 
+            size = 5) +
+  facet_wrap(.~land_dad) +
+  scale_y_continuous(labels = percent_format(1)) +
+  scale_fill_manual(values = colors,
+                    name = "",
+                    labels = c("Andere Parteien", 
+                               "AfD")) +
+  scale_color_manual(values = colors,
+                     name = "",
+                     labels = c("Andere Parteien", 
+                               "AfD")) +
+  theme_minimal_hgrid(font_size = 20) +
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  labs(y = "Prozent der befragten Personen",
+       x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot2
 ```
 

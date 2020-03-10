@@ -1,7 +1,7 @@
 Mythen und Fakten - Die AfD Wählerschaft unter der Lupe
 ================
 Manuel Neumann
-06 March, 2020
+09 March, 2020
 
 # Einführung
 
@@ -38,13 +38,24 @@ In diesem Dokument präsentiere ich die Ergebnisse
 
 ![](plots/MgR-links-rechts-1.png)<!-- -->
 
+    ## N = 7243
+
 ![](plots/MgR-links-rechts-immi-1.png)<!-- -->
 
-![](plots/MgR-links-rechts-gender-1.gif)<!-- -->
+    ## N = 6976
+
+![](plots/MgR-links-rechts-gender-1.png)<!-- -->![](plots/MgR-links-rechts-gender-1.gif)<!-- -->
+
+    ## N = 7243
 
 # Sozio-ökonomische Zusammenhänge
 
 ![](plots/MgR-gender_plot-1.png)<!-- -->
+
+![](plots/MgR-age_plot-1.png)<!-- -->
+![](plots/MgR-ageplot2-1.png)<!-- -->
+
+![](plots/MgR-ageplot3-1.png)<!-- -->
 
 # Ost-West
 
@@ -65,3 +76,17 @@ In diesem Dokument präsentiere ich die Ergebnisse
 
 ![](plots/MgR-outgroup_plot_extreme1-1.png)<!-- -->
 ![](plots/MgR-outgroup_plot_extreme2-1.png)<!-- -->
+
+# Migrationsgeschichte
+
+    ## Don't know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.
+
+![](plots/MgR-migration-1.png)<!-- -->
+
+    ## Don't know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.
+
+![](plots/MgR-migration1-1.png)<!-- -->
+
+    ## Don't know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.
+
+![](plots/MgR-migration2-1.png)<!-- -->
