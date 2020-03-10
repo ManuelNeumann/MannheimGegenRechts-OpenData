@@ -366,7 +366,7 @@ table(gles$kp7_1500)
 gles$lr <- if_else(gles$kp7_1500 > 0, gles$kp7_1500 - 1, NA_real_)
 
 
-# vi. Migrationsgeschichte
+# vi. Migrationsgeschichte ----
 attributes(gles$kpx_2571a)
 attributes(gles$kpx_2571b)
 
@@ -381,7 +381,7 @@ gles %<>% mutate(mum = if_else(kpx_2571a > 0,
                  eltern = dad+mum)
 table(gles$eltern)
 
-# vii. Herkunftsland der Eltern
+# vii. Herkunftsland der Eltern ----
 
 # Mutter
 attributes(gles$kpx_2572a)
@@ -412,7 +412,7 @@ gles %<>% mutate(land_mum = case_when(kpx_2572a == -97 ~ 0,
 
 table(gles$land_mum, gles$land_dad)
 
-# viii. Religion
+# viii. Religion ----
 attributes(gles$kp1_2480)
 table(gles$kp1_2480)
 

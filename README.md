@@ -1,7 +1,7 @@
 Mythen und Fakten - Die AfD Wählerschaft unter der Lupe
 ================
 Manuel Neumann
-09 March, 2020
+10 March, 2020
 
 # Einführung
 
@@ -79,14 +79,8 @@ In diesem Dokument präsentiere ich die Ergebnisse
 
 # Migrationsgeschichte
 
-    ## Don't know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.
-
 ![](plots/MgR-migration-1.png)<!-- -->
 
-    ## Don't know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.
-
 ![](plots/MgR-migration1-1.png)<!-- -->
-
-    ## Don't know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.
 
 ![](plots/MgR-migration2-1.png)<!-- -->
