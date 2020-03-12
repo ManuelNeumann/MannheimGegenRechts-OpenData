@@ -402,7 +402,8 @@ gles %<>% mutate(land_mum = case_when(kpx_2572a == -97 ~ 0,
                                                        11, 12, 13, 14) ~ 3,
                                       kpx_2572a %in% c(4, 5, 9) ~ 4,
                                       kpx_2572a == 7 ~ 5,
-                                      kpx_2572a == 16 ~ 6,
+                                      kpx_2572a == 15 ~ 6,
+                                      kpx_2572b == 16 ~ 7,
                                       FALSE ~ NA_real_), 
                  land_dad = case_when(kpx_2572b == -97 ~ 0,
                                       kpx_2572b == 1 ~ 1,
@@ -411,10 +412,159 @@ gles %<>% mutate(land_mum = case_when(kpx_2572a == -97 ~ 0,
                                                        11, 12, 13, 14) ~ 3,
                                       kpx_2572b %in% c(4, 5, 9) ~ 4,
                                       kpx_2572b == 7 ~ 5,
-                                      kpx_2572b == 16 ~ 6,
+                                      kpx_2572b == 15 ~ 6,
+                                      kpx_2572b == 16 ~ 7,
                                       FALSE ~ NA_real_))
 
 table(gles$land_mum, gles$land_dad)
+
+gles %<>% mutate(fDE = case_when(land_dad == 1 & land_mum == 1 ~ 2,
+                                  land_dad == 1 | land_mum == 1 ~ 1,
+                                  land_dad == 0 & land_mum == 0 ~ 0,
+                                  FALSE ~ NA_real_),
+                 TUE = case_when(land_dad == 2 & land_mum == 2 ~ 2,
+                                land_dad == 2 | land_mum == 2 ~ 1,
+                                land_dad == 0 & land_mum == 0 ~ 0,
+                                FALSE ~ NA_real_),
+                 EUR = case_when(land_dad == 3 & land_mum == 3 ~ 2,
+                                land_dad == 3 | land_mum == 3 ~ 1,
+                                land_dad == 0 & land_mum == 0 ~ 0,
+                                FALSE ~ NA_real_),
+                 OST = case_when(land_dad == 4 & land_mum == 4 ~ 2,
+                                 land_dad == 4 | land_mum == 4 ~ 1,
+                                 land_dad == 0 & land_mum == 0 ~ 0,
+                                 FALSE ~ NA_real_),
+                 BAL = case_when(land_dad == 5 & land_mum == 5 ~ 2,
+                                 land_dad == 5 | land_mum == 5 ~ 1,
+                                 land_dad == 0 & land_mum == 0 ~ 0,
+                                 FALSE ~ NA_real_),
+                 USA = case_when(land_dad == 6 & land_mum == 6 ~ 2,
+                                 land_dad == 6 | land_mum == 6 ~ 1,
+                                 land_dad == 0 & land_mum == 0 ~ 0,
+                                 FALSE ~ NA_real_),
+                 OTH = case_when(land_dad == 7 & land_mum == 7 ~ 2,
+                                 land_dad == 7 | land_mum == 7 ~ 1,
+                                 land_dad == 0 & land_mum == 0 ~ 0,
+                                 FALSE ~ NA_real_))
+
+table(gles$fDE)
+
+eltern_fde <- gles %>%
+  select(afdvote1, fDE) %>%
+  na.omit() %>%
+  group_by(fDE, afdvote1) %>%
+  summarize(n = n()) %>%
+  mutate(freq = n / sum(n),
+         freq_r = paste0(round(freq, 3) * 100, "%")) %>% 
+  ungroup()
+
+eltern_fde$label <- paste0("Frühere Ostgebiete\nVerhältnis = ",
+                           sum(eltern_fde$n[eltern_fde$fDE == 0]), "/",
+                           sum(eltern_fde$n[eltern_fde$fDE > 0]))
+
+eltern_tue <- gles %>% 
+  select(afdvote1, TUE) %>% 
+  na.omit() %>% 
+  group_by(TUE, afdvote1) %>% 
+  summarize(n = n()) %>%
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ungroup()
+
+eltern_tue$label <- paste0("Türkei\nVerhältnis = ",
+                           sum(eltern_tue$n[eltern_tue$TUE == 0]), "/",
+                           sum(eltern_tue$n[eltern_tue$TUE > 0]))
+
+
+eltern_eur <- gles %>% 
+  select(afdvote1, EUR) %>% 
+  na.omit() %>% 
+  group_by(EUR, afdvote1) %>% 
+  summarize(n = n()) %>%
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ungroup()
+
+eltern_eur$label <- paste0("Europa\nVerhältnis = ",
+                           sum(eltern_eur$n[eltern_eur$EUR == 0]), "/",
+                           sum(eltern_eur$n[eltern_eur$EUR > 0]))
+
+
+eltern_ost <- gles %>% 
+  select(afdvote1, OST) %>% 
+  na.omit() %>% 
+  group_by(OST, afdvote1) %>% 
+  summarize(n = n()) %>%
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ungroup()
+
+eltern_ost$label <- paste0("Osteuropa/Russland\nVerhältnis = ",
+                           sum(eltern_ost$n[eltern_ost$OST == 0]), "/",
+                           sum(eltern_ost$n[eltern_ost$OST > 0]))
+
+eltern_bal <- gles %>% 
+  select(afdvote1, BAL) %>% 
+  na.omit() %>% 
+  group_by(BAL, afdvote1) %>% 
+  summarize(n = n()) %>%
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ungroup()
+
+eltern_bal$label <- paste0("Balkanländer\nVerhältnis = ",
+                           sum(eltern_bal$n[eltern_bal$BAL == 0]), "/",
+                           sum(eltern_bal$n[eltern_bal$BAL > 0]))
+
+eltern_usa <- gles %>% 
+  select(afdvote1, USA) %>% 
+  na.omit() %>% 
+  group_by(USA, afdvote1) %>% 
+  summarize(n = n()) %>%
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ungroup()
+
+eltern_usa$label <- paste0("USA\nVerhältnis = ",
+                           sum(eltern_usa$n[eltern_usa$USA == 0]), "/",
+                           sum(eltern_usa$n[eltern_usa$USA > 0]))
+
+eltern_oth <- gles %>% 
+  select(afdvote1, OTH) %>% 
+  na.omit() %>% 
+  group_by(OTH, afdvote1) %>% 
+  summarize(n = n()) %>%
+  mutate(freq = n/sum(n),
+         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
+  ungroup()
+
+eltern_oth$label <- paste0("Andere Länder\nVerhältnis = ",
+                           sum(eltern_oth$n[eltern_oth$OTH == 0]), "/",
+                           sum(eltern_oth$n[eltern_oth$OTH > 0]))
+
+colnames(eltern_fde)[1] <- "neltern"
+colnames(eltern_tue)[1] <- "neltern"
+colnames(eltern_eur)[1] <- "neltern"
+colnames(eltern_ost)[1] <- "neltern"
+colnames(eltern_bal)[1] <- "neltern"
+colnames(eltern_oth)[1] <- "neltern"
+
+eltern_plotdat <- bind_rows(eltern_fde,
+                            eltern_tue,
+                            eltern_eur,
+                            eltern_ost,
+                            eltern_bal,
+                            eltern_oth)
+
+# unique(eltern_plotdat$label_f)
+
+eltern_plotdat$label_f <- factor(eltern_plotdat$label,
+                                 levels = c("Frühere Ostgebiete\nVerhältnis = 5174/520",
+                                            "Europa\nVerhältnis = 5174/129",
+                                            "Osteuropa/Russland\nVerhältnis = 5174/259",
+                                            "Balkanländer\nVerhältnis = 5174/38",
+                                            "Türkei\nVerhältnis = 5174/33",
+                                            "Andere Länder\nVerhältnis = 5174/101"))
 
 # viii. Religion ----
 attributes(gles$kp1_2480)
