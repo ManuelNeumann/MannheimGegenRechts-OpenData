@@ -34,7 +34,7 @@ colors <- c(orange, blue, darkgrey, red)
 
 # Einführung
 
-In diesem Dokument präsentiere ich die Ergebnisse 
+In diesem Dokument präsentiere ich die Grafiken meiner Präsentation beim Jahreskongress des Mannheimer Bündnisses gegen Rechts am 14. März 2020.
 
 # Die Datenquellen
 
@@ -71,9 +71,8 @@ lr_plot <- grcs %>%
   theme(legend.position = "bottom",         legend.justification="center") +
   labs(y = "% der befragten Personen",
        x = "Links-rechts Selbsteinstufung"); lr_plot
-
-cat("N =", nrow(na.omit(grcs[, c("lr")])))
 ```
+N = `r nrow(na.omit(grcs[, c("lr")]))`
 
 ```{r links-rechts-immi, fig.width=6.8}
 lr_immi_plot <- grcs %>% 
@@ -96,9 +95,9 @@ lr_immi_plot <- grcs %>%
   theme_minimal_grid(font_size = 20) +
 labs(y = "Position zu Einwanderung", 
        x = "Links-rechts Selbsteinstufung"); lr_immi_plot
-
-cat("N =", nrow(na.omit(grcs[, c("lr", "ego_immi1")])))
 ```
+
+N = `r nrow(na.omit(grcs[, c("lr", "ego_immi1")]))`
 
 ```{r links-rechts-gender}
 lr_plot_gen <- grcs %>% 
@@ -137,9 +136,8 @@ lr_plot_gen_animated <- lr_plot_gen +
   transition_states(lr, wrap = FALSE) +
   shadow_mark()
 animate(lr_plot_gen_animated, end_pause = 20)
-
-cat("N =", nrow(na.omit(grcs[, c("lr", "gender")])))
 ```
+N = `r nrow(na.omit(grcs[, c("lr", "gender")]))`
 
 ```{r links-rechts-afd}
 # lr_afd_plot <- gles %>% 
@@ -190,9 +188,8 @@ gender <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   labs(y = "% der AfD Wähler*innen",
        x = ""); gender
-
-cat("N = ", nrow(na.omit(gles[, c("afdvote1", "gender")])))
 ```
+N = `r nrow(na.omit(gles[, c("afdvote1", "gender")]))`
 
 ```{r age_plot}
 ageplot1 <- gles %>% 
@@ -217,9 +214,9 @@ ageplot1 <- gles %>%
         legend.justification="center") +
   labs(y = "% der befragten Personen",
        x = ""); ageplot1
-
-cat("N = ", nrow(na.omit(gles[, c("afdvote1", "age2")])))
 ```
+N = `r nrow(na.omit(gles[, c("afdvote1", "age2")]))`
+
 ```{r ageplot2}
 ageplot2 <- gles %>% 
   select(age2, afdvote1) %>% 
@@ -289,10 +286,8 @@ ageplot3 <- gles %>%
         legend.justification="center") +
   labs(y = "% der befragten Personen",
        x = ""); ageplot3
-
-cat("N = ", nrow(na.omit(gles[, c("afdvote1", "age2", "gender")])))
 ```
-
+N = `r nrow(na.omit(gles[, c("afdvote1", "age2", "gender")]))`
 
 # Ost-West
 
@@ -312,9 +307,8 @@ ostwest <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   labs(y = "% der AfD Wähler*innen",
        x = ""); ostwest
-
-cat("N = ", nrow(na.omit(gles[, c("afdvote1", "ost")])))
 ```
+N = `r nrow(na.omit(gles[, c("afdvote1", "ost")]))`
 
 ```{r ostwest_plot1}
 ostwest1 <- gles %>% 
@@ -407,6 +401,7 @@ outgrplot <- ggplot(data = gles, aes(x = outgrindex)) +
        x = "Index"); outgrplot
   
 ```
+N = `r nrow(na.omit(gles[, c("outgrindex")]))`
 
 ```{r outgroup_plot2a}
 # Visualization.
@@ -498,6 +493,8 @@ outgrplot4 <- ggplot(na.omit(gles[, c("outgrindex1stand",
 
 ```
 
+N = `r nrow(na.omit(gles[, c("afdvote1", "outgrindex")]))`
+
 ```{r outgroup_plot_extreme1}
 outgrplot5 <- gles %>%
   select(outgrindex1stand, voteact1) %>% 
@@ -530,6 +527,9 @@ outgrplot5 <- gles %>%
   labs(y = "% der befragten Personen",
        x = "Index (Extremwert = 1)"); outgrplot5
 ```
+
+N = `r nrow(na.omit(gles[gles$outgrindex == 1, c("voteact1")]))`
+
 ```{r outgroup_plot_extreme2}
 outgrplot6 <- gles %>%
   select(outgrindex1stand, voteact1) %>% 
@@ -563,6 +563,7 @@ outgrplot6 <- gles %>%
   labs(y = "% der befragten Personen",
        x = "Index (Oberes Viertel)"); outgrplot6
 ```
+N = `r nrow(na.omit(gles[gles$outgrindex >= 0.75, c("voteact1")]))`
 
 # Migrationsgeschichte
 
@@ -625,29 +626,22 @@ migrationplot1 <- gles %>%
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "% der befragten Personen",
-       x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot1
+       x = "Anzahl der Eltern, die in nicht DE geboren sind"); migrationplot1
 ```
+N = `r nrow(na.omit(gles[, c("eltern", "afdvote1")]))`
 
-```{r migration2}
-migrationplot2 <- gles %>% 
-  select(eltern, afdvote1, land_dad) %>% 
-  na.omit() %>% 
-  group_by(land_dad, eltern, afdvote1) %>% 
-  summarize(n = n()) %>% 
-  mutate(freq = n/sum(n),
-         freq_r = paste0(round(freq, 3)*100, "%")) %>% 
-  ggplot(aes(x = eltern,
-             y = freq,
+```{r eltern-plot, fig.height=6}
+eltern_plot <- eltern_plotdat %>% 
+  ggplot(aes(x = neltern, y = freq,
              fill = as.factor(afdvote1),
              color = as.factor(afdvote1))) +
   geom_bar(stat = "identity",
            alpha = 0.5,
-           position = "dodge") +
-  geom_text(aes(y = freq+0.05, label = freq_r),
+           position = position_dodge2(preserve = "single")) +
+  geom_text(aes(y = freq+0.08, label = freq_r),
             position = position_dodge(width = 0.9),
             color = "black", 
             size = 5) +
-  facet_wrap(.~land_dad) +
   scale_y_continuous(labels = percent_format(1)) +
   scale_fill_manual(values = colors,
                     name = "",
@@ -657,10 +651,11 @@ migrationplot2 <- gles %>%
                      name = "",
                      labels = c("Andere Parteien", 
                                "AfD")) +
+  facet_wrap(.~label_f, ncol = 3) +
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
   labs(y = "% der befragten Personen",
-       x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot2
+       x = "Anzahl der Eltern, die in nicht in DE geboren sind"); eltern_plot
 ```
 

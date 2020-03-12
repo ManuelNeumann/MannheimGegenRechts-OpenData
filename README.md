@@ -1,11 +1,12 @@
 Mythen und Fakten - Die AfD Wählerschaft unter der Lupe
 ================
 Manuel Neumann
-11 March, 2020
+12 March, 2020
 
 # Einführung
 
-In diesem Dokument präsentiere ich die Ergebnisse
+In diesem Dokument präsentiere ich die Grafiken meiner Präsentation beim
+Jahreskongress des Mannheimer Bündnisses gegen Rechts am 14. März 2020.
 
 # Die Datenquellen
 
@@ -36,45 +37,34 @@ In diesem Dokument präsentiere ich die Ergebnisse
 
 # Links-rechts
 
-![](plots/MgR-links-rechts-1.png)<!-- -->
-
-    ## N = 7243
+![](plots/MgR-links-rechts-1.png)<!-- --> N = 7243
 
 ![](plots/MgR-links-rechts-immi-1.png)<!-- -->
 
-    ## N = 6976
+N = 6976
 
 ![](plots/MgR-links-rechts-gender-1.png)<!-- -->![](plots/MgR-links-rechts-gender-1.gif)<!-- -->
-
-    ## N = 7243
+N = 7243
 
 # Sozio-ökonomische Zusammenhänge
 
-![](plots/MgR-gender_plot-1.png)<!-- -->
+![](plots/MgR-gender_plot-1.png)<!-- --> N = 6455
 
-    ## N =  6455
-
-![](plots/MgR-age_plot-1.png)<!-- -->
-
-    ## N =  6455
+![](plots/MgR-age_plot-1.png)<!-- --> N = 6455
 
 ![](plots/MgR-ageplot2-1.png)<!-- -->
 
-![](plots/MgR-ageplot3-1.png)<!-- -->
-
-    ## N =  6455
+![](plots/MgR-ageplot3-1.png)<!-- --> N = 6455
 
 # Ost-West
 
-![](plots/MgR-ostwest_plot-1.png)<!-- -->
-
-    ## N =  6455
+![](plots/MgR-ostwest_plot-1.png)<!-- --> N = 6455
 
 ![](plots/MgR-ostwest_plot1-1.png)<!-- -->
 
 # Einstellungen
 
-![](plots/MgR-outgroup_plot1-1.png)<!-- -->
+![](plots/MgR-outgroup_plot1-1.png)<!-- --> N = 8374
 
 ![](plots/MgR-outgroup_plot2a-1.png)<!-- -->
 
@@ -83,13 +73,18 @@ In diesem Dokument präsentiere ich die Ergebnisse
 ![](plots/MgR-outgroup_plot2c-1.png)<!-- -->
 ![](plots/MgR-outgroup_plot2d-1.png)<!-- -->
 
+N = 5952
+
 ![](plots/MgR-outgroup_plot_extreme1-1.png)<!-- -->
-![](plots/MgR-outgroup_plot_extreme2-1.png)<!-- -->
+
+N = 779
+
+![](plots/MgR-outgroup_plot_extreme2-1.png)<!-- --> N = 5692
 
 # Migrationsgeschichte
 
 ![](plots/MgR-migration-1.png)<!-- -->
 
-![](plots/MgR-migration1-1.png)<!-- -->
+![](plots/MgR-migration1-1.png)<!-- --> N = 6172
 
-![](plots/MgR-migration2-1.png)<!-- -->
+![](plots/MgR-eltern-plot-1.png)<!-- -->
