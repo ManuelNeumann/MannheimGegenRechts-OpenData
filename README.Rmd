@@ -69,7 +69,7 @@ lr_plot <- grcs %>%
                                 "Rechts")) +
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Links-rechts Selbsteinstufung"); lr_plot
 
 cat("N =", nrow(na.omit(grcs[, c("lr")])))
@@ -130,7 +130,7 @@ lr_plot_gen <- grcs %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Links-rechts Selbsteinstufung");lr_plot_gen
 
 lr_plot_gen_animated <- lr_plot_gen + 
@@ -169,7 +169,7 @@ cat("N =", nrow(na.omit(grcs[, c("lr", "gender")])))
 #   theme_minimal_hgrid(font_size = 20) +
 #   theme(legend.position = "bottom",
 #         legend.justification="center") +
-#   labs(y = "Prozent der befragten Personen",
+#   labs(y = "% der befragten Personen",
 #        x = "Links-rechts Selbsteinstufung"); lr_afd_plot
 ```
 
@@ -188,8 +188,10 @@ gender <- gles %>%
   scale_y_continuous(labels = percent_format()) +
   scale_fill_manual(values = colors) +
   theme_minimal_hgrid(font_size = 20) +
-  labs(y = "Prozent der AfD Wähler*innen",
+  labs(y = "% der AfD Wähler*innen",
        x = ""); gender
+
+cat("N = ", nrow(na.omit(gles[, c("afdvote1", "gender")])))
 ```
 
 ```{r age_plot}
@@ -213,9 +215,10 @@ ageplot1 <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
-       x = "Index"); ageplot1
+  labs(y = "% der befragten Personen",
+       x = ""); ageplot1
 
+cat("N = ", nrow(na.omit(gles[, c("afdvote1", "age2")])))
 ```
 ```{r ageplot2}
 ageplot2 <- gles %>% 
@@ -248,8 +251,8 @@ ageplot2 <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
-       x = "Index"); ageplot2
+  labs(y = "% der befragten Personen",
+       x = ""); ageplot2
 ```
 
 ```{r ageplot3}
@@ -280,12 +283,14 @@ ageplot3 <- gles %>%
                      name = "",
                      labels = c("Andere Parteien", 
                                "AfD")) +
-  facet_wrap(.~gender) +
+  facet_wrap(~gender, ncol = 2) +
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
-       x = "Index"); ageplot3
+  labs(y = "% der befragten Personen",
+       x = ""); ageplot3
+
+cat("N = ", nrow(na.omit(gles[, c("afdvote1", "age2", "gender")])))
 ```
 
 
@@ -305,8 +310,10 @@ ostwest <- gles %>%
   scale_y_continuous(labels = percent_format()) +
   scale_fill_manual(values = colors) +
   theme_minimal_hgrid(font_size = 20) +
-  labs(y = "Prozent der AfD Wähler*innen",
+  labs(y = "% der AfD Wähler*innen",
        x = ""); ostwest
+
+cat("N = ", nrow(na.omit(gles[, c("afdvote1", "ost")])))
 ```
 
 ```{r ostwest_plot1}
@@ -341,7 +348,7 @@ ostwest1 <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = ""); ostwest1
 ```
 ```{r grcs_ostwest_plot1}
@@ -375,7 +382,7 @@ ostwest1 <- gles %>%
 #                                "AfD")) +
 #   theme_minimal_hgrid(font_size = 20) +
 #   theme(legend.position = "bottom",         legend.justification="center") +
-#   labs(y = "Prozent der befragten Personen",
+#   labs(y = "% der befragten Personen",
 #        x = ""); ostwest2
 ```
 
@@ -396,7 +403,7 @@ outgrplot <- ggplot(data = gles, aes(x = outgrindex)) +
                                 "->",
                                 "Eher restriktiv")) +
   theme_minimal_hgrid(font_size = 20) +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Index"); outgrplot
   
 ```
@@ -436,7 +443,7 @@ outgrplot1 <- ggplot(outmodus,
                                 "->",
                                 "1\nSehr restriktiv")) +
   theme_minimal_hgrid(font_size = 20) +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Index"); outgrplot1
 ```
 
@@ -470,11 +477,11 @@ outgrplot4 <- ggplot(na.omit(gles[, c("outgrindex1stand",
            alpha = 0.5) +
   scale_y_continuous(labels = percent_format(1), 
                      limits = c(0, 0.15)) +
-  scale_x_continuous(labels = c("0 = Sehr tolerant", 
+  scale_x_continuous(labels = c("0\nSehr tolerant", 
                                 "<-",
                                 "|",
                                 "->",
-                                "1 = Sehr restriktiv")) +
+                                "1\nSehr restriktiv")) +
   scale_fill_manual(values = colors,
                     name = "",
                     labels = c("Andere Parteien", 
@@ -486,7 +493,7 @@ outgrplot4 <- ggplot(na.omit(gles[, c("outgrindex1stand",
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Index"); outgrplot4
 
 ```
@@ -520,7 +527,7 @@ outgrplot5 <- gles %>%
                                "Andere", "Nichtwahl")) +
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Index (Extremwert = 1)"); outgrplot5
 ```
 ```{r outgroup_plot_extreme2}
@@ -553,7 +560,7 @@ outgrplot6 <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Index (Oberes Viertel)"); outgrplot6
 ```
 
@@ -582,7 +589,7 @@ migrationplot <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot
 ```
 
@@ -617,7 +624,7 @@ migrationplot1 <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot1
 ```
 
@@ -653,7 +660,7 @@ migrationplot2 <- gles %>%
   theme_minimal_hgrid(font_size = 20) +
   theme(legend.position = "bottom",
         legend.justification="center") +
-  labs(y = "Prozent der befragten Personen",
+  labs(y = "% der befragten Personen",
        x = "Anzahl der Eltern, die in DE geboren sind"); migrationplot2
 ```
 

@@ -55,6 +55,8 @@ grcs %<>% mutate(voteint = case_when(pre005a == -98 ~ "ADontKnow",
                                      FALSE ~ NA_real_))
 
 grcs$afd <- if_else(grcs$afdvote == 1, "AfD", "Andere Partei") %>% factor()
+table(grcs$afd)
+proptable(grcs$afd)
 
 # b. Independent variables ----
 
@@ -224,6 +226,8 @@ table(gles$voteact1, gles$afdvote1, useNA = "always")
 gles$voteact1 %<>% factor(., levels = c("AfD", "CDU/CSU", "FDP",
                                         "SPD", "Grüne", "LINKE",
                                         "Andere", "Nichtwahl"))
+
+proptable(gles$voteact1)
 
 # b. Independent variables --------------------------------------------------
 
