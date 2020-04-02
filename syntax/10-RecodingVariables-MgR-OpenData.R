@@ -310,6 +310,8 @@ table(gles$kpx_2290)
 gles$age <- 2017 - gles$kpx_2290
 table(gles$age)
 
+gles$age_sq <- gles$age^2
+
 gles %<>% mutate(age2 = case_when(age < 30 ~ "18 - 29",
                                   age >= 30 & age < 40 ~ "30 - 39",
                                   age >= 40 & age < 50 ~ "40 - 49",
@@ -322,6 +324,7 @@ attributes(gles$kpx_2280)
 table(gles$kpx_2280)
 gles$gender <- if_else(gles$kpx_2280 == 2, "W", "M") %>% factor()
 
+gles$gender2 <- gles$kpx_2280 - 1 
 
 # Income satisfaction ----
 attributes(gles$kp1_780)
@@ -340,6 +343,20 @@ gles$edu <- case_when(gles$kp1_2320 %in% c(1, 2) ~ 0,
                       gles$kp1_2320 %in% c(4, 5) ~ 2,
                       FALSE ~ NA_real_)
 
+
+# City ----
+attributes(gles$kp1_2600)
+table(gles$kp1_2600)
+
+gles %<>% mutate(wohnort = case_when(kp1_2600 == 1 ~ 0,
+                                     kp1_2600 %in% c(2:3) ~ 1,
+                                     kp1_2600 %in% c(4:5) ~ 2,
+                                     FALSE ~ NA_real_),
+                 city = if_else(wohnort == 0, 1, 0),
+                 medcity = if_else(wohnort == 1, 1, 0),
+                 town = if_else(wohnort == 2, 1, 0))
+
+table(gles$kp1_2600, gles$wohnort, useNA = "always")
 
 # iv. Political Interest ----
 attributes(gles$kp1_010)

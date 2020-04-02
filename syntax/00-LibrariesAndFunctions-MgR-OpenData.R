@@ -14,6 +14,9 @@ library(pacman)
 
 p_load(magrittr)
 citation("magrittr")
+
+p_load(MASS)
+
 p_load(tidyverse)
 citation("tidyverse")
 

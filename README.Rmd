@@ -345,6 +345,54 @@ ostwest1 <- gles %>%
   labs(y = "% der befragten Personen",
        x = ""); ostwest1
 ```
+
+```{r ostwest_model, fig.width=5.5}
+ostmodel <- glm(afdvote1 ~ ostwest + gender2 + 
+                  age + age_sq + 
+                  income1 + edu +
+                  city + medcity,
+                data = gles, family = "binomial")
+
+# summary(ostmodel)
+
+newdat <- data.frame(afdvote1 = 1,
+                     ostwest = c(0,1),
+                     gender2 = 1,
+                     age = median(gles$age),
+                     age_sq = median(gles$age_sq),
+                     income1 = median(gles$income1, na.rm = TRUE),
+                     edu = median(gles$edu, na.rm = TRUE),
+                     city = 1,
+                     medcity = 0)
+
+# newdat %>% View()
+
+pred_ostmodel_sce <- log_pred_sce(model = ostmodel,
+                                  data = newdat,
+                                  xvari = "ostwest",
+                                  seed = 200404)
+
+pred_ostmodel_ova <- log_pred_ova(model = ostmodel,
+                                  xvari = "ostwest", 
+                                  seed = 200404)
+
+pred_ostmodel_sce$plotdata$ostwest %<>% factor(., levels = c(1, 0)) 
+  
+pred_ostmodel_sce$plotdata %>% 
+  ggplot(aes(x = as.factor(ostwest), y = mean, 
+                                      ymin = lower, ymax = upper)) +
+  geom_linerange(color = blue, size = 2, 
+                 alpha = 0.5) +
+  geom_point(color = blue, size = 4) +
+  scale_y_continuous(labels = percent_format(1), breaks = seq(0.1, 0.22, by = 0.02)) +
+  scale_x_discrete(labels = c("West", "Ost"), ) +
+  theme_minimal_hgrid() +
+  labs(y = "Geschätzte Wahrscheinlichkeit",
+       x = "")
+
+```
+
+
 ```{r grcs_ostwest_plot1}
 # ostwest2 <- grcs %>% 
 #   select(afdvote, ost) %>% 

@@ -1,7 +1,7 @@
 Mythen und Fakten - Die AfD Wählerschaft unter der Lupe
 ================
 Manuel Neumann
-12 March, 2020
+02 April, 2020
 
 # Einführung
 
@@ -61,6 +61,8 @@ N = 7243
 ![](plots/MgR-ostwest_plot-1.png)<!-- --> N = 6455
 
 ![](plots/MgR-ostwest_plot1-1.png)<!-- -->
+
+![](plots/MgR-ostwest_model-1.png)<!-- -->
 
 # Einstellungen
 
