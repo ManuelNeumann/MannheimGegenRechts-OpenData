@@ -249,6 +249,149 @@ log_pred_ova <- function(model,
 }
 
 
+log_pred_sce <- function(model,
+                         data = NULL,
+                         xvari, by = NULL,
+                         nsim = 1000,
+                         seed = "random",
+                         probs = c(0.025, 0.975)) {
+  
+  # Create list that is returned in the end.
+  output <- list()
+  
+  # Data
+  # data
+  
+  # Get matrix of coefficients out of the model
+  mu <- coef(model)
+  
+  # Number of coefficients
+  ncoef <- length(mu)
+  
+  # Variance-covariance matrix of estimates
+  varcov <- vcov(model)
+  
+  # Set seed if needed:
+  if (seed != "random") {
+    set.seed(seed = seed)
+  }
+  
+  # Simulate a sampling distribution
+  S <- mvrnorm(nsim, mu, varcov)
+  output[["S"]] <- S
+  
+  # Artificial variation ov independent variable of interest
+  if (is.null(by) == TRUE) {
+    by <- abs(min(eval(parse(text = paste0("data$", xvari))), na.rm = TRUE) -
+                max(eval(parse(text = paste0("data$", xvari))), na.rm = TRUE))
+  }
+  
+  variation <- seq(from = min(eval(parse(text = paste0("data$", xvari))), na.rm = TRUE),
+                   to = max(eval(parse(text = paste0("data$", xvari))), na.rm = TRUE),
+                   by = by)
+  
+  
+  output[["Variation"]] <- variation
+  
+  # Length of sequence
+  nseq <- length(variation)
+  output[["nVariation"]] <- nseq
+  
+  variables <- as.character(attr(model$terms, "variables"))[-1]
+  
+  # Name of independent variables
+  iv <- variables[2:length(variables)]
+  output[["IV"]] <- iv
+  
+  # Name of dependent variable
+  dv <- variables[1]
+  output[["DV"]] <- dv
+  
+  # Full observations (listwise deletion):
+  data_redux <- na.omit(data[, variables])
+  
+  obs <- nrow(data_redux)
+  
+  # Numbers of interactions
+  ninteraction <- sum(grepl(":", names(model$coefficients)))
+  
+  # Matrix of observations
+  X <- matrix(NA, ncol = ncoef, nrow = obs)
+  colnames(X) <- names(model$coefficients)
+  # 1 for the Intercept
+  X[, 1] <- 1
+  # Values of the independent variables
+  X[, 2:(length(iv)+1)] <- as.matrix(data_redux[, iv])
+  
+  
+  # Prepare array to fill in the matrix with the observed values
+  ovacases <- array(NA, c(dim(X), nseq))
+  # Fill in the matrices:
+  ovacases[,,] <- X
+  
+  # Select the position of the variable which should vary:
+  varidim <- which(colnames(X) == xvari)
+  
+  
+  # Artificially alter the variable in each dimension according to
+  # the preferred sequence:
+  for (i in 1:nseq) {
+    ovacases[, varidim, i] <- variation[i]
+  }
+  
+  
+  
+  # Compute interactions:
+  if (ninteraction != 0) {
+    
+    # Get position of interaction terms
+    interactionterms <- which(grepl(":", names(model$coefficients)) == TRUE)
+    
+    # Compute the terms:
+    for (i in c(interactionterms)) {
+      # First variable name of the interaction:
+      firstint <- gsub(":.*", "", names(model$coefficients[i]))
+      # Second variable name of the interaction:
+      secondint <- gsub(".*:", "", names(model$coefficients[i]))
+      
+      # Get position in matrix:
+      intdim1 <- which(colnames(X) == firstint)
+      intdim2 <- which(colnames(X) == secondint)
+      
+      # Compute interaction term:
+      for(j in 1:nseq) {
+        ovacases[, i, j] <- ovacases[, intdim1, j]*ovacases[, intdim2, j]
+      }
+    }
+  }
+  
+  P <- apply(ovacases, 3, function(x) {
+    apply(S, 1, function(s) mean(1 / (1+exp(-x %*% s))))
+  })
+  
+  output[["P"]] <- P
+  
+  plotdat <- data.frame(x = variation,
+                        mean = rep(NA, nseq),
+                        lower = rep(NA, nseq),
+                        upper = rep(NA, nseq))
+  
+  plotdat$mean <- apply(P, 2, mean)
+  plotdat$lower <- apply(P, 2, quantile, probs = probs[1])
+  plotdat$upper <- apply(P, 2, quantile, probs = probs[2])
+  
+  
+  # Rename the variables in the plot data
+  colnames(plotdat)[1] <- xvari
+  
+  
+  # Put the data in the output
+  output[["plotdata"]] <- plotdat
+  
+  return(output)
+}
+
+
 log_fd_ova <- function(model,
                        xvari,
                        scenname,
